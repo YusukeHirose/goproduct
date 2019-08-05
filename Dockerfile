@@ -1,6 +1,6 @@
 FROM golang:1.12.6-alpine
 
-WORKDIR /go/main
+WORKDIR /go/goproduct
 
 COPY ./ /go/goproduct
 

@@ -1,0 +1,28 @@
+version: '3'
+services:
+  api:
+    container_name: api
+    build: .
+    volumes: 
+      - ./:/go/goproduct
+    tty: 'true'
+    depends_on:
+      - "db"
+    ports:
+      - "1323:1323"
+    networks:
+      - go-product
+
+  db:
+    container_name: mysql
+    build: ./db
+    ports: 
+      - "3306:3306"
+    volumes:
+      - ./db/mysql_data:/var/lib/mysql
+    networks:
+      - go-product
+
+networks:
+  go-product:
+    external: "true"
