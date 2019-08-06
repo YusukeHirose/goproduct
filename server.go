@@ -1,7 +1,7 @@
 package main
 
 import (
-	"goproduct/router"
+	"./router"
 
 	"./api/middlewares"
 
@@ -18,7 +18,7 @@ func main() {
 	middlewares.SetMainMiddlewares(e)
 
 	// Database
-	db := db.DbManager()
+	db := db.Manager()
 
 	// Route => handler
 	router.SetUrl(e)
