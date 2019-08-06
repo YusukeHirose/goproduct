@@ -7,7 +7,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-func dbMannager() *gorm.DB {
+func DbManager() *gorm.DB {
 	db := DbConnect()
 	db.AutoMigrate()
 
