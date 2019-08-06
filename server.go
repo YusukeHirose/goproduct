@@ -1,7 +1,7 @@
 package main
 
 import (
-	"net/http"
+	"goproduct/router"
 
 	"./api/middlewares"
 
@@ -21,9 +21,7 @@ func main() {
 	db := db.DbManager()
 
 	// Route => handler
-	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello, World!\n")
-	})
+	router.SetUrl(e)
 
 	defer db.Close()
 
