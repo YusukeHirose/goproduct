@@ -3,10 +3,11 @@ package main
 import (
 	"net/http"
 
+	"./api/middlewares"
+
 	"./db"
 
 	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
 )
 
 func main() {
@@ -14,8 +15,7 @@ func main() {
 	e := echo.New()
 
 	// Middleware
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
+	middlewares.SetMainMiddlewares(e)
 
 	// Database
 	db := db.DbManager()
