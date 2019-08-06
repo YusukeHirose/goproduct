@@ -10,4 +10,5 @@ func SetUrl(e *echo.Echo) {
 	group := e.Group("/products")
 	group.GET("", handlers.GetProducts)
 	group.GET("/:id", handlers.GetProduct)
+	group.POST("", handlers.PostProduct)
 }
