@@ -2,6 +2,7 @@ package db
 
 import (
 	"fmt"
+	"goproduct/api/models"
 	"log"
 
 	"github.com/jinzhu/gorm"
@@ -9,7 +10,7 @@ import (
 
 func DbManager() *gorm.DB {
 	db := DbConnect()
-	db.AutoMigrate()
+	db.AutoMigrate(&models.Product{})
 
 	return db
 }
