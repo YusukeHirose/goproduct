@@ -1,8 +1,9 @@
 package main
 
 import (
-	"goproduct/db"
 	"net/http"
+
+	"./db"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
