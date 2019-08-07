@@ -2,9 +2,8 @@ package db
 
 import (
 	"fmt"
+	"goproduct/api/models"
 	"log"
-
-	"../api/models"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"

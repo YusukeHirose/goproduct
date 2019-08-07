@@ -1,8 +1,8 @@
 FROM golang:1.12.6-alpine
 
-WORKDIR /go/goproduct
+WORKDIR /go/src/goproduct
 
-COPY ./ /go/goproduct
+COPY ./ /go/src/goproduct
 
 RUN apk add --no-cache \
         alpine-sdk \

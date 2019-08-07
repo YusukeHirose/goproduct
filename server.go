@@ -1,11 +1,9 @@
 package main
 
 import (
-	"./router"
-
-	"./api/middlewares"
-
-	"./db"
+	"goproduct/api/middlewares"
+	"goproduct/db"
+	"goproduct/router"
 
 	"github.com/labstack/echo"
 )

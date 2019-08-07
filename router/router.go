@@ -1,7 +1,7 @@
 package router
 
 import (
-	"../api/handlers"
+	"goproduct/api/handlers"
 
 	"github.com/labstack/echo"
 )

@@ -1,11 +1,9 @@
 package handlers
 
 import (
+	"goproduct/api/models"
+	"goproduct/db"
 	"net/http"
-
-	"../models"
-
-	"../../db"
 
 	"github.com/labstack/echo"
 )
