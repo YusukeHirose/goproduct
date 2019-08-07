@@ -4,7 +4,7 @@ services:
     container_name: api
     build: .
     volumes: 
-      - ./:/go/src/goproduct
+      - ./:/go/goproduct
     tty: 'true'
     depends_on:
       - "db"
