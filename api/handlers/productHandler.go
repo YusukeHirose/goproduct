@@ -72,3 +72,15 @@ func DeleteProduct(c echo.Context) error {
 	db.Delete(&product)
 	return c.String(http.StatusNoContent, "success")
 }
+
+func FindByName(c echo.Context) error {
+	db := db.Connect()
+	defer db.Close()
+	name := c.QueryParam("name")
+	products := []models.Product{}
+	if db.Where("name LIKE ?", "%"+name+"%").Find(&products).RecordNotFound() {
+		return echo.NewHTTPError(http.StatusNotFound)
+	}
+	responseBody := map[string][]models.Product{"products": products}
+	return c.JSON(http.StatusOK, responseBody)
+}
