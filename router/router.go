@@ -11,4 +11,5 @@ func SetUrl(e *echo.Echo) {
 	group.GET("", handlers.GetProducts)
 	group.GET("/:id", handlers.GetProduct)
 	group.POST("", handlers.PostProduct)
+	group.PATCH("/:id", handlers.UpdateProduct)
 }

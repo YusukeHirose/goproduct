@@ -43,3 +43,19 @@ func PostProduct(c echo.Context) error {
 	responseBody := map[string]models.Product{"product": product}
 	return c.JSON(http.StatusOK, responseBody)
 }
+
+func UpdateProduct(c echo.Context) error {
+	db := db.Connect()
+	defer db.Close()
+	id := c.Param("id")
+	product := models.Product{}
+	if db.Where("id=?", id).Find(&product).RecordNotFound() {
+		return echo.NewHTTPError(http.StatusNotFound)
+	}
+	if err := c.Bind(&product); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest)
+	}
+	db.Save(&product)
+	responseBody := map[string]models.Product{"product": product}
+	return c.JSON(http.StatusOK, responseBody)
+}
