@@ -60,6 +60,7 @@ func UpdateProduct(c echo.Context) error {
 	if db.Where("id=?", id).Find(&product).RecordNotFound() {
 		return echo.NewHTTPError(http.StatusNotFound)
 	}
+	deleteImageFile := product.Image
 	if err := c.Bind(&product); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest)
 	}
@@ -67,6 +68,8 @@ func UpdateProduct(c echo.Context) error {
 	imageFileName := strings.TrimLeft(imagePath, imagesDir)
 	product.Image = imageFileName
 	db.Save(&product)
+	// 更新された画像ファイルは削除
+	deleteUploadedImageFile(imagesDir + deleteImageFile)
 	responseBody := map[string]models.Product{"product": product}
 	return c.JSON(http.StatusOK, responseBody)
 }
@@ -152,4 +155,17 @@ func writeImageData(filePath string, imageByteData []byte) {
 		log.Fatal(err)
 	}
 	writer.Flush()
+}
+
+func deleteUploadedImageFile(imagePath string) {
+	// ファイルの存在確認
+	_, err := os.Stat(imagePath)
+	if err != nil {
+		log.Fatal(err)
+		log.Println("削除するファイルが存在しない")
+		return
+	}
+	if err := os.Remove(imagePath); err != nil {
+		log.Fatal(err)
+	}
 }
