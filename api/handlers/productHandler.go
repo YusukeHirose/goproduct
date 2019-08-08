@@ -1,12 +1,14 @@
 package handlers
 
 import (
+	"bufio"
 	"encoding/base64"
 	"fmt"
 	"goproduct/api/models"
 	"goproduct/db"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -42,8 +44,10 @@ func PostProduct(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest)
 	}
-	uploadImage(product.Image)
-	//db.Create(&product)
+	imagePath := uploadImage(product.Image)
+	imageFileName := strings.TrimLeft(imagePath, imagesDir)
+	product.Image = imageFileName
+	db.Create(&product)
 	responseBody := map[string]models.Product{"product": product}
 	return c.JSON(http.StatusOK, responseBody)
 }
@@ -95,7 +99,7 @@ const (
 	Png       = "image/png"
 	Jpg       = "image/jpg"
 	Jpeg      = "image/jpeg"
-	imagesDir = "goproduct/statis/images/"
+	imagesDir = "static/images/"
 )
 
 func uploadImage(image string) string {
@@ -110,10 +114,9 @@ func uploadImage(image string) string {
 	}
 
 	imageType := http.DetectContentType(imageByteData)
-	log.Println("imageType is " + imageType)
-
 	filePath := generateFilePath(imageType)
-	log.Println("file path is " + filePath)
+
+	writeImageData(filePath, imageByteData)
 
 	return filePath
 }
@@ -131,4 +134,19 @@ func generateFilePath(imageType string) string {
 		log.Println("画像データではない")
 	}
 	return imagesDir + fmt.Sprint(time.Now().Format("20060102150405")) + extention
+}
+
+func writeImageData(filePath string, imageByteData []byte) {
+	file, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE, 0666)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+	writer := bufio.NewWriter(file)
+	_, err = writer.Write(imageByteData)
+	if err != nil {
+		log.Println("writing is faild")
+		log.Fatal(err)
+	}
+	writer.Flush()
 }
