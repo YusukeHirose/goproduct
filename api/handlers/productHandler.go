@@ -1,9 +1,12 @@
 package handlers
 
 import (
+	"encoding/base64"
 	"goproduct/api/models"
 	"goproduct/db"
+	"log"
 	"net/http"
+	"strings"
 
 	"github.com/labstack/echo"
 )
@@ -37,7 +40,8 @@ func PostProduct(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest)
 	}
-	db.Create(&product)
+	uploadImage(product.Image)
+	//db.Create(&product)
 	responseBody := map[string]models.Product{"product": product}
 	return c.JSON(http.StatusOK, responseBody)
 }
@@ -83,4 +87,19 @@ func FindByName(c echo.Context) error {
 	}
 	responseBody := map[string][]models.Product{"products": products}
 	return c.JSON(http.StatusOK, responseBody)
+}
+
+func uploadImage(image string) string {
+	// base64形式のリクエストをデコードする
+	if !strings.Contains(image, ",") {
+		log.Println("base64の画像データではない")
+	}
+	imageData := strings.Split(image, ",")[1]
+	imageByteData, err := base64.StdEncoding.DecodeString(imageData)
+	if err != nil {
+		log.Println("base64形式ではない")
+	}
+	imageType := http.DetectContentType(imageByteData)
+	log.Println("imageType is %s", imageType)
+	return imageType
 }
