@@ -2,11 +2,13 @@ package handlers
 
 import (
 	"encoding/base64"
+	"fmt"
 	"goproduct/api/models"
 	"goproduct/db"
 	"log"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/labstack/echo"
 )
@@ -89,6 +91,13 @@ func FindByName(c echo.Context) error {
 	return c.JSON(http.StatusOK, responseBody)
 }
 
+const (
+	Png       = "image/png"
+	Jpg       = "image/jpg"
+	Jpeg      = "image/jpeg"
+	imagesDir = "goproduct/statis/images/"
+)
+
 func uploadImage(image string) string {
 	// base64形式のリクエストをデコードする
 	if !strings.Contains(image, ",") {
@@ -99,7 +108,27 @@ func uploadImage(image string) string {
 	if err != nil {
 		log.Println("base64形式ではない")
 	}
+
 	imageType := http.DetectContentType(imageByteData)
-	log.Println("imageType is %s", imageType)
-	return imageType
+	log.Println("imageType is " + imageType)
+
+	filePath := generateFilePath(imageType)
+	log.Println("file path is " + filePath)
+
+	return filePath
+}
+
+func generateFilePath(imageType string) string {
+	var extention string
+	switch imageType {
+	case Png:
+		extention = ".png"
+	case Jpg:
+		extention = ".jpg"
+	case Jpeg:
+		extention = ".jpeg"
+	default:
+		log.Println("画像データではない")
+	}
+	return imagesDir + fmt.Sprint(time.Now().Format("20060102150405")) + extention
 }
