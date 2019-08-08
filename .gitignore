@@ -1,2 +1,5 @@
 db/mysql_data/*
-tmp/*
+tmp
+go.mod
+go.sum
+goproduct
