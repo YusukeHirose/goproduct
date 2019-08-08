@@ -63,6 +63,9 @@ func UpdateProduct(c echo.Context) error {
 	if err := c.Bind(&product); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest)
 	}
+	imagePath := uploadImage(product.Image)
+	imageFileName := strings.TrimLeft(imagePath, imagesDir)
+	product.Image = imageFileName
 	db.Save(&product)
 	responseBody := map[string]models.Product{"product": product}
 	return c.JSON(http.StatusOK, responseBody)
