@@ -110,9 +110,9 @@ const (
 
 func uploadImage(image string) string {
 	// base64形式のリクエストをデコードする
-	if !strings.Contains(image, ",") {
-		log.Println("base64の画像データではない")
-	}
+	// if !strings.Contains(image, ",") {
+	// 	log.Println("base64の画像データではない")
+	// }
 	imageData := strings.Split(image, ",")[1]
 	imageByteData, err := base64.StdEncoding.DecodeString(imageData)
 	if err != nil {

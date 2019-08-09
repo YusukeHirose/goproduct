@@ -11,7 +11,7 @@ import (
 func main() {
 	// Echo instance
 	e := echo.New()
-
+	// e.HTTPErrorHandler = handlers.CustomHTTPErrorHandler
 	// Middleware
 	middlewares.SetMainMiddlewares(e)
 
