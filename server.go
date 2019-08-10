@@ -1,6 +1,7 @@
 package main
 
 import (
+	"goproduct/api/handlers"
 	"goproduct/api/middlewares"
 	"goproduct/db"
 	"goproduct/router"
@@ -11,7 +12,7 @@ import (
 func main() {
 	// Echo instance
 	e := echo.New()
-	// e.HTTPErrorHandler = handlers.CustomHTTPErrorHandler
+	e.HTTPErrorHandler = handlers.CustomHTTPErrorHandler
 	// Middleware
 	middlewares.SetMainMiddlewares(e)
 
