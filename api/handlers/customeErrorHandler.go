@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"goproduct/api/models"
-	"log"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -23,10 +22,9 @@ func CustomHTTPErrorHandler(err error, c echo.Context) {
 		response := map[string]models.Error{"error": responseValue}
 		c.JSON(http.StatusInternalServerError, response)
 	case http.StatusBadRequest:
-		log.Println("#####" + err.Error())
 		responseValue = models.Error{
 			Status:  code,
-			Message: err.Error(),
+			Message: "Bad request",
 		}
 		response := map[string]models.Error{"error": responseValue}
 		c.JSON(http.StatusBadRequest, response)
