@@ -98,6 +98,8 @@ func DeleteProduct(c echo.Context) error {
 	if err := c.Bind(&product); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest)
 	}
+	deleteImageFile := product.Image
+	deleteUploadedImageFile(imagesDir + deleteImageFile)
 	db.Delete(&product)
 	return c.String(http.StatusNoContent, "success")
 }
