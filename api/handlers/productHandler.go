@@ -12,6 +12,8 @@ import (
 	"strings"
 	"time"
 
+	"gopkg.in/go-playground/validator.v9"
+
 	"github.com/labstack/echo"
 )
 
@@ -40,9 +42,14 @@ func PostProduct(c echo.Context) error {
 	db := db.Connect()
 	defer db.Close()
 	product := models.Product{}
-	err := c.Bind(&product)
-	if err != nil {
+	if err := c.Bind(&product); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest)
+	}
+	if err := c.Validate(product); err != nil {
+		if errors := err.(validator.ValidationErrors); len(errors) > 0 {
+			responseBody := GenerateValidationErrorMessage(errors)
+			return c.JSON(http.StatusBadRequest, responseBody)
+		}
 	}
 	imagePath := uploadImage(product.Image)
 	imageFileName := strings.TrimLeft(imagePath, imagesDir)
@@ -63,6 +70,12 @@ func UpdateProduct(c echo.Context) error {
 	deleteImageFile := product.Image
 	if err := c.Bind(&product); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest)
+	}
+	if err := c.Validate(product); err != nil {
+		if errors := err.(validator.ValidationErrors); len(errors) > 0 {
+			responseBody := GenerateValidationErrorMessage(errors)
+			return c.JSON(http.StatusBadRequest, responseBody)
+		}
 	}
 	imagePath := uploadImage(product.Image)
 	imageFileName := strings.TrimLeft(imagePath, imagesDir)
