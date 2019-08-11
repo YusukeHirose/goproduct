@@ -12,6 +12,8 @@ import (
 	"strings"
 	"time"
 
+	"gopkg.in/go-playground/validator.v9"
+
 	"github.com/labstack/echo"
 )
 
@@ -36,13 +38,62 @@ func GetProduct(c echo.Context) error {
 	return c.JSON(http.StatusOK, responseBody)
 }
 
+const (
+	name        string = "Name"
+	price       string = "Price"
+	description string = "Description"
+	image       string = "Image"
+	required    string = "required"
+	max         string = "max"
+)
+
 func PostProduct(c echo.Context) error {
 	db := db.Connect()
 	defer db.Close()
 	product := models.Product{}
-	err := c.Bind(&product)
-	if err != nil {
+	if err := c.Bind(&product); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest)
+	}
+	if err := c.Validate(product); err != nil {
+		log.Println(err.(validator.ValidationErrors))
+		if errors := err.(validator.ValidationErrors); len(errors) > 0 {
+			var messages []string
+			for _, err := range errors {
+				field := err.Field()
+				tag := err.Tag()
+				var message string
+				switch field {
+				case name:
+					switch tag {
+					case required:
+						message = "name is required"
+					case max:
+						message = "name is limited to 5 characters"
+					}
+				case price:
+					switch tag {
+					case required:
+						message = "price is required"
+					case max:
+						message = "price is limited to 5 characters"
+					}
+				case description:
+					switch tag {
+					case required:
+						message = "description is required"
+					case max:
+						message = "description is limited to 5 characters"
+					}
+				}
+				messages = append(messages, message)
+			}
+			responseValue := models.ValidationErrors{
+				Status:  http.StatusBadRequest,
+				Message: messages,
+			}
+			responseBody := map[string]models.ValidationErrors{"errors": responseValue}
+			return c.JSON(http.StatusBadRequest, responseBody)
+		}
 	}
 	imagePath := uploadImage(product.Image)
 	imageFileName := strings.TrimLeft(imagePath, imagesDir)
