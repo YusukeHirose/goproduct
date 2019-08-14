@@ -14,4 +14,7 @@ func SetUrl(e *echo.Echo) {
 	group.PATCH("/:id", handlers.UpdateProduct)
 	group.DELETE("/:id", handlers.DeleteProduct)
 	group.GET("/search", handlers.FindByName)
+
+	auth := e.Group("/login")
+	auth.GET("", handlers.GetCode)
 }
