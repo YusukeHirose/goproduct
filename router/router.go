@@ -17,4 +17,5 @@ func SetUrl(e *echo.Echo) {
 
 	auth := e.Group("/login")
 	auth.GET("", handlers.GetCode)
+	auth.GET("/redirect", handlers.GetAccessToken)
 }

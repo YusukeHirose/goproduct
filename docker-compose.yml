@@ -5,6 +5,7 @@ services:
     build: .
     environment:
       - QIITA_CLIANT=${QIITA_CLIANT}
+      - QIITA_SECRET=${QIITA_SECRET}
     volumes: 
       - ./:/go/goproduct
     tty: 'true'

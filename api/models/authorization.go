@@ -1,5 +1,7 @@
 package models
 
 type Auth struct {
-	ClientId string `envconfig:"QIITA_CLIANT"`
+	ClientId     string `envconfig:"QIITA_CLIANT"`
+	ClientSecret string `envconfig:"QIITA_SECRET" json:"client_secret"`
+	Code         string `json:"code"`
 }
