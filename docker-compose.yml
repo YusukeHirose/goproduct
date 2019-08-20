@@ -3,6 +3,8 @@ services:
   api:
     container_name: api
     build: .
+    environment:
+      - QIITA_CLIANT=${QIITA_CLIANT}
     volumes: 
       - ./:/go/goproduct
     tty: 'true'

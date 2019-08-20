@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"goproduct/api/models"
-	"log"
 	"net/http"
 
 	"github.com/kelseyhightower/envconfig"
@@ -14,6 +13,5 @@ func GetCode(c echo.Context) error {
 
 	envconfig.Process("", &authStruct)
 	clientId := authStruct.ClientId
-	log.Println(clientId)
 	return c.JSON(http.StatusOK, clientId)
 }
