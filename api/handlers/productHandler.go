@@ -51,9 +51,11 @@ func PostProduct(c echo.Context) error {
 			return c.JSON(http.StatusBadRequest, responseBody)
 		}
 	}
-	imagePath := uploadImage(product.Image)
-	imageFileName := strings.TrimLeft(imagePath, imagesDir)
-	product.Image = imageFileName
+	if product.Image != "" {
+		imagePath := uploadImage(product.Image)
+		imageFileName := strings.TrimLeft(imagePath, imagesDir)
+		product.Image = imageFileName
+	}
 	db.Create(&product)
 	responseBody := map[string]models.Product{"product": product}
 	return c.JSON(http.StatusOK, responseBody)
