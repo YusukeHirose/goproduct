@@ -23,6 +23,7 @@ func Authorization(group *echo.Group) {
 		accessedTime := time.Now()
 		expiredTime := user.ExpiredAt
 		if !accessedTime.Before(expiredTime) {
+			db.Delete(&user)
 			return false, echo.NewHTTPError(http.StatusUnauthorized)
 		}
 		// 認証された場合にトークンの期限を更新する

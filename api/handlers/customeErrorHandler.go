@@ -48,7 +48,7 @@ func CustomHTTPErrorHandler(err error, c echo.Context) {
 			Message: "Authorization faild",
 		}
 		response := map[string]models.Error{"error": responseValue}
-		c.JSON(http.StatusNotFound, response)
+		c.JSON(http.StatusUnauthorized, response)
 	default:
 		responseValue = models.Error{
 			Status:  code,

@@ -60,12 +60,18 @@ func GetQiitaAccessToken(c echo.Context) error {
 	db := db.Connect()
 	defer db.Close()
 	var user models.User
-	user.QiitaAccessToken = authResponse.Token
 	user.QiitaId = getUserQiitaId(user.QiitaAccessToken)
-	user.AccessToken, user.ExpiredAt = generateAccessToken()
-	db.Create(&user)
+	if db.Where("qiita_id=?", user.QiitaId).Find(&user).RecordNotFound() {
+		user.QiitaAccessToken = authResponse.Token
+		user.AccessToken, user.ExpiredAt = generateAccessToken()
+		db.Create(&user)
+	} else {
+		// ユーザーが存在していた場合更新処理をする
+		user.QiitaAccessToken = authResponse.Token
+		user.AccessToken, user.ExpiredAt = generateAccessToken()
+		db.Save(&user)
+	}
 	return c.JSON(http.StatusOK, user)
-
 }
 
 func getUserQiitaId(qiitaAccessToken string) string {
