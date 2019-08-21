@@ -33,34 +33,39 @@ func GetQiitaAccessToken(c echo.Context) error {
 	requestByte, err := json.Marshal(requestBody)
 	if err != nil {
 		log.Fatal(err)
+		return echo.NewHTTPError(http.StatusInternalServerError)
 	}
 	requestBuffer := bytes.NewBuffer(requestByte)
 	req, err := http.NewRequest("POST", baseApiUrl+"/access_tokens", requestBuffer)
 	if err != nil {
 		log.Fatal(err)
+		return echo.NewHTTPError(http.StatusInternalServerError)
 	}
 	req.Header.Add("Content-type", "application/json")
 	client := &http.Client{}
 	res, err := client.Do(req)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, "リクエスト失敗")
+		log.Fatal(err)
+		return echo.NewHTTPError(http.StatusInternalServerError)
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusCreated {
-		return c.JSON(http.StatusInternalServerError, "リクエスト失敗")
+		log.Fatal(err)
+		return echo.NewHTTPError(http.StatusInternalServerError)
 	}
 
 	// レスポンスを受け取る
 	var authResponse models.AuthResponse
 	if err := json.NewDecoder(res.Body).Decode(&authResponse); err != nil {
 		log.Fatal(err)
+		return echo.NewHTTPError(http.StatusInternalServerError)
 	}
 
 	// ユーザーデータの作成
 	db := db.Connect()
 	defer db.Close()
 	var user models.User
-	user.QiitaId = getUserQiitaId(user.QiitaAccessToken)
+	user.QiitaId, _ = getUserQiitaId(user.QiitaAccessToken)
 	if db.Where("qiita_id=?", user.QiitaId).Find(&user).RecordNotFound() {
 		user.QiitaAccessToken = authResponse.Token
 		user.AccessToken, user.ExpiredAt = generateAccessToken()
@@ -74,23 +79,26 @@ func GetQiitaAccessToken(c echo.Context) error {
 	return c.JSON(http.StatusOK, user)
 }
 
-func getUserQiitaId(qiitaAccessToken string) string {
+func getUserQiitaId(qiitaAccessToken string) (string, error) {
 	req, err := http.NewRequest("GET", baseApiUrl+"/authenticated_user", nil)
 	if err != nil {
 		log.Fatal(err)
+		return "", echo.NewHTTPError(http.StatusInternalServerError)
 	}
 	client := &http.Client{}
 	req.Header.Add("Authorization", "Bearer "+qiitaAccessToken)
 	res, err := client.Do(req)
 	if err != nil {
 		log.Fatal(err)
+		return "", echo.NewHTTPError(http.StatusInternalServerError)
 	}
 	var user models.User
 	defer res.Body.Close()
 	if err := json.NewDecoder(res.Body).Decode(&user); err != nil {
 		log.Fatal(err)
+		return "", echo.NewHTTPError(http.StatusInternalServerError)
 	}
-	return user.QiitaId
+	return user.QiitaId, nil
 }
 
 func generateAccessToken() (string, time.Time) {
