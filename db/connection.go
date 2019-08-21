@@ -12,12 +12,12 @@ import (
 func Manager() *gorm.DB {
 	db := Connect()
 	db.AutoMigrate(&models.Product{})
-
+	db.AutoMigrate(&models.User{})
 	return db
 }
 
 func Connect() *gorm.DB {
-	db, err := gorm.Open("mysql", "root:@tcp(db:3306)/go_product?charset=utf8&parseTime=True&Local")
+	db, err := gorm.Open("mysql", "root:@tcp(db:3306)/go_product?charset=utf8&parseTime=True&loc=Asia%2FTokyo")
 	if err != nil {
 		log.Println("connection is faild")
 		fmt.Println(err.Error())
