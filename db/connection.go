@@ -17,7 +17,7 @@ func Manager() *gorm.DB {
 }
 
 func Connect() *gorm.DB {
-	db, err := gorm.Open("mysql", "root:@tcp(db:3306)/go_product?charset=utf8&parseTime=True&Local")
+	db, err := gorm.Open("mysql", "root:@tcp(db:3306)/go_product?charset=utf8&parseTime=True&loc=Asia%2FTokyo")
 	if err != nil {
 		log.Println("connection is faild")
 		fmt.Println(err.Error())
