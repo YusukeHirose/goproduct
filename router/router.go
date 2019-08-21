@@ -2,6 +2,7 @@ package router
 
 import (
 	"goproduct/api/handlers"
+	"goproduct/api/middlewares"
 
 	"github.com/labstack/echo"
 )
