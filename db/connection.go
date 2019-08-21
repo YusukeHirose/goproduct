@@ -12,7 +12,7 @@ import (
 func Manager() *gorm.DB {
 	db := Connect()
 	db.AutoMigrate(&models.Product{})
-
+	db.AutoMigrate(&models.User{})
 	return db
 }
 

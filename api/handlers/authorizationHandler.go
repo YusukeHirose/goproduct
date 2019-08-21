@@ -3,10 +3,14 @@ package handlers
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"goproduct/api/models"
+	"goproduct/db"
 	"log"
 	"net/http"
+	"time"
 
+	"github.com/google/uuid"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/labstack/echo"
 )
@@ -22,7 +26,7 @@ func GetCode(c echo.Context) error {
 	return c.Redirect(http.StatusMovedPermanently, requestUrl)
 }
 
-func GetAccessToken(c echo.Context) error {
+func GetQiitaAccessToken(c echo.Context) error {
 	var requestBody models.Auth
 	envconfig.Process("", &requestBody)
 	requestBody.Code = c.QueryParam("code")
@@ -51,8 +55,17 @@ func GetAccessToken(c echo.Context) error {
 	if err := json.NewDecoder(res.Body).Decode(&authResponse); err != nil {
 		log.Fatal(err)
 	}
-	name := getUserQiitaId(authResponse.Token)
-	return c.JSON(http.StatusOK, name)
+
+	// ユーザーデータの作成
+	db := db.Connect()
+	defer db.Close()
+	var user models.User
+	user.QiitaAccessToken = authResponse.Token
+	user.QiitaId = getUserQiitaId(user.QiitaAccessToken)
+	user.AccessToken, user.ExpiredAt = generateAccessToken()
+	db.Create(&user)
+	return c.JSON(http.StatusOK, user)
+
 }
 
 func getUserQiitaId(qiitaAccessToken string) string {
@@ -72,4 +85,15 @@ func getUserQiitaId(qiitaAccessToken string) string {
 		log.Fatal(err)
 	}
 	return user.QiitaId
+}
+
+func generateAccessToken() (string, time.Time) {
+	accessToken, err := uuid.NewRandom()
+	if err != nil {
+		log.Fatal(err)
+	}
+	//expiredAt := time.Now().AddDate(0,0,1)
+	expiredAt := time.Now().Add(1 * time.Minute)
+	log.Println(fmt.Sprint(expiredAt))
+	return accessToken.String(), expiredAt
 }
