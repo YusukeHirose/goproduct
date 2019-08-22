@@ -186,3 +186,15 @@ func deleteUploadedImageFile(imagePath string) {
 		log.Fatal(err)
 	}
 }
+
+func GetImage(c echo.Context) error {
+	db := db.Connect()
+	defer db.Close()
+	fileName := c.QueryParam("image")
+	product := models.Product{}
+	if db.Where("image=?", fileName).Find(&product).RecordNotFound() {
+		return echo.NewHTTPError(http.StatusNotFound)
+	}
+	image := product.Image
+	return c.File(imagesDir + image)
+}
