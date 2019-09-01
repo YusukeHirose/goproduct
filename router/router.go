@@ -16,6 +16,7 @@ func SetUrl(e *echo.Echo) {
 	products.PATCH("/:id", handlers.UpdateProduct)
 	products.DELETE("/:id", handlers.DeleteProduct)
 	products.GET("/search", handlers.FindByName)
+	products.GET("/images", handlers.GetImage)
 
 	auth := e.Group("/login")
 	auth.GET("", handlers.GetCode)
