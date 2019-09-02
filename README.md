@@ -8,21 +8,22 @@
 ・gorm
 
 ## 起動手順
-### Qiitaアプリケーション登録(認証で使います)
+### Qiitaアプリケーション登録(認証で使用)
 #### リダイレクトURL設定
-Qiitaアプリケーション登録画面のリダイレクトURLに下記を指定
+Qiitaアプリケーション登録画面のリダイレクトURLに下記を指定<br>
 ```localhost:8080/login/redirect```
 
 #### 環境変数設定
 ```export QIITA_CLIANT="Qiitaアプリケーション登録で指定されたクライアントID"```<br>
 ```export QIITA_SECRET="Qiitaアプリケーション登録で指定されたシークレットキー"```
 
-#### dockerコンテナ起動<br>
+#### dockerコンテナ起動
 ```docker-compose up```<br>
 #### ネットワーク作成<br>
 ```docker network create --driver bridge go-product```
 
 ## ディレクトリ構成
+<pre>
 .<br>
 ├── Dockerfile<br>
 ├── README.md<br>
@@ -53,6 +54,7 @@ Qiitaアプリケーション登録画面のリダイレクトURLに下記を指
 ├── server.go<br>
 ├── static<br>
     └── images
+</pre>
 
 ## API認証
 ```localhost:8080/login``` でQiitaログイン<br>
@@ -60,19 +62,19 @@ Qiitaアプリケーション登録画面のリダイレクトURLに下記を指
 Authorizationヘッダーに ```Bearer: "返却されたアクセストークン"``` を指定してリクエスト
 
 ## APIリクエストURL
-共通: ```localhost:8080```
+共通: ```localhost:8080```<br>
 <br>
-概要|httpメソッド|URL
-:-:|:-:|:-:
-ログイン|GET|login
-全件取得|GET|products
-1件取得|GET|products/{id}
-登録|POST|products
-編集|PATCH|products/{id}
-削除|DELETE|products/{id}
-検索|GET|products/search
-画像取得|GET|products/images
-
+| 概要 | httpメソッド | URL |  
+|:---:|:---:|:---:|  
+|ログイン|GET|login|  
+|全件取得|GET|products|  
+|1件取得|GET|products/{id}|  
+|登録|POST|products|  
+|編集|PATCH|products/{id}|  
+|削除|DELETE|products/{id}|  
+|検索|GET|products/search|  
+|画像取得|GET|products/images|  
+<br>
 ## APIリクエスト例
 Content-Type: application/json
 ```
