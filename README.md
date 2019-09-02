@@ -64,7 +64,7 @@ Authorizationヘッダーに ```Bearer: "返却されたアクセストークン
 ## APIリクエストURL
 共通: ```localhost:8080```<br>
 |概要|httpメソッド|URL|
-|:-:|:-:|:-:|
+|:---:|:---:|:---:|
 |ログイン|GET|login|
 |全件取得|GET|products|
 |1件取得|GET|products/{id}|
